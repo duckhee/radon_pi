@@ -18,4 +18,4 @@ port.on('open', function() {
 
 //setInterval(function() { radontest.list(Serialport) }, 5000);
 
-setInterval(function() { test2.list(port, parser) }, 5000);
+setInterval(function() { test2.get_serial(port, parser) }, 5000);
