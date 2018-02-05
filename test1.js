@@ -14,6 +14,7 @@ exports.reset = function(serialport) {
         console.log('open port !');
         port.write('r', function(data) {
             console.log('r data : ', data);
+            port.end();
             return data;
         });
     });
@@ -33,6 +34,7 @@ exports.list = function(serialport) {
         console.log('open port !');
         port.write('p', function(data) {
             console.log('p data : ', data);
+            port.end();
             return data;
         });
     });
@@ -52,6 +54,7 @@ exports.get_serial = function(serialport) {
         console.log('open port !');
         port.write('c', function(data) {
             console.log('c data : ', data);
+            port.end();
             return data;
         });
     });
