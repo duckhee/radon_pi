@@ -1,5 +1,3 @@
-var command = {};
-
 exports.reset = function(serialport) {
     var port = new serialport('/dev', {
         baudrate: 9600
