@@ -17,7 +17,6 @@ exports.list = function(port, parser) {
     parser.on('data', function(data) {
         console.log('p data : ', data);
 
-        return data;
 
 
     });
@@ -30,7 +29,7 @@ exports.get_serial = function(port, parser) {
     port.write('c');
     parser.on('data', function(data) {
         console.log('c data : ', data);
-        return data;
+
     });
 };
 
@@ -41,6 +40,6 @@ exports.get_data = function(port, parser) {
     parser.on('data', function(data) {
         console.log('s data : ', data);
 
-        return data;
+
     });
 };
