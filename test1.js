@@ -1,6 +1,6 @@
 exports.reset = function(serialport) {
     var port = new serialport('/dev', {
-        baudrate: 9600
+        baudRate: 9600
     });
     var parsers = serialport.parsers;
     var parser = new parsers.Readline({
@@ -20,7 +20,7 @@ exports.reset = function(serialport) {
 
 exports.list = function(serialport) {
     var port = new serialport('/dev', {
-        baudrate: 9600
+        baudRate: 9600
     });
     var parsers = serialport.parsers;
     var parser = new parsers.Readline({
@@ -40,7 +40,7 @@ exports.list = function(serialport) {
 
 exports.get_serial = function(serialport) {
     var port = new serialport('/dev', {
-        baudrate: 9600
+        baudRate: 9600
     });
     var parsers = serialport.parsers;
     var parser = new parsers.Readline({
@@ -60,7 +60,7 @@ exports.get_serial = function(serialport) {
 
 exports.get_data = function(serialport) {
     var port = new serialport('/dev', {
-        baudrate: 9600
+        baudRate: 9600
     });
     var parsers = serialport.parsers;
     var parser = new parsers.Readline({
