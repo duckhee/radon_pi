@@ -1,8 +1,6 @@
 var SerialPort = require('serialport'); //아두이노와 시리얼 통신할 수 있는 모듈
 
 
-var config = require('../config.json');
-
 var parsers = SerialPort.parsers;
 var parser = new parsers.Readline({
     delimiter: '\r\n'
@@ -15,7 +13,7 @@ var onoffcontroller = new GPIO(21, 'out');
 
 //라즈베리파이와 연결된 디바이스 주소
 var port = new SerialPort('/dev/ttyUSB0', {
-    baudrate: 9600
+    baudRate: 9600
 });
 
 port.pipe(parser);
