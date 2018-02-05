@@ -1,4 +1,4 @@
 var Serialport = require('serialport');
 var radontest = require('./test1');
 
-radontest.list(Serialport);
+setInterval(radontest.list(Serialport), 5000);
