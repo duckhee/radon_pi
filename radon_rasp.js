@@ -8,7 +8,7 @@ var parser = new parsers.Readline({
 });
 
 var port = new Serialport('/dev/', {
-    baudRate:9600
+    baudrate:9600
 });
 
 

@@ -5,7 +5,7 @@ module.exports = function(serialport)
 {
     var port = new serialport('/dev', 
     {
-        bandRate: 9600
+        baudrate: 9600
     });
     var parsers = Serialport.parsers;
     var parser = new parsers.Readline({
