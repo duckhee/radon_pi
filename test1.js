@@ -1,5 +1,5 @@
 exports.reset = function(serialport) {
-    var port = new serialport('/dev', {
+    var port = new serialport('/dev/ttyUSB0', {
         baudRate: 9600
     });
     var parsers = serialport.parsers;
@@ -19,7 +19,7 @@ exports.reset = function(serialport) {
 };
 
 exports.list = function(serialport) {
-    var port = new serialport('/dev', {
+    var port = new serialport('/dev/ttyUSB0', {
         baudRate: 9600
     });
     var parsers = serialport.parsers;
@@ -39,7 +39,7 @@ exports.list = function(serialport) {
 };
 
 exports.get_serial = function(serialport) {
-    var port = new serialport('/dev', {
+    var port = new serialport('/dev/ttyUSB0', {
         baudRate: 9600
     });
     var parsers = serialport.parsers;
@@ -59,7 +59,7 @@ exports.get_serial = function(serialport) {
 };
 
 exports.get_data = function(serialport) {
-    var port = new serialport('/dev', {
+    var port = new serialport('/dev/ttyUSB0', {
         baudRate: 9600
     });
     var parsers = serialport.parsers;
