@@ -21,7 +21,7 @@ module.exports = function(serialport)
             console.log('r data : ', data);
             command.r_data = data;
         });
-        return command;
+        return command
     };
 
     command.prototype.list()

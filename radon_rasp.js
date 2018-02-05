@@ -1,4 +1,5 @@
 var Serialport = require('serialport');
+var radontest = require('./sensor_command');
 
 
 var parsers = Serialport.parsers;
@@ -18,6 +19,7 @@ port.write('p', function(data){
     console.log(data);
     }
 });
+
 
 port.on('error', function(err){
     console.log(err);
