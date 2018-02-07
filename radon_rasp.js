@@ -13,14 +13,15 @@ var port = new Serialport('/dev/', {
 
 
 port.pipe(parser);
-
+port.on('open', function(){
 port.write('p', function(data){
     if(data){
     console.log(data);
     }
 });
 
+});
 
 port.on('error', function(err){
     console.log(err);
-})
+});
