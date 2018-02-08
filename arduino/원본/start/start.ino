@@ -1,6 +1,7 @@
 #include <SoftReset.h> 
+#include <SoftwareSerial.h>
 
- 
+ SoftwareSerial test(0, 1);
 
 #define LOG_PERIOD 60000
 #define MAX_PERIOD 60000
@@ -25,6 +26,7 @@ unsigned long cpm;
 unsigned int multiplier;    
 unsigned long previousMillis;
 
+String test_value = "";
 
 void output() {
   Serial.print("O");
@@ -38,6 +40,7 @@ void tube_impulse() {
  
 void setup() { 
   Serial.begin(9600);
+  test.begin(9600);
   attachInterrupt(0, tube_impulse, RISING);
   pinMode(2, INPUT); 
   inputString.reserve(4);
@@ -86,7 +89,6 @@ void loop() {
     stringComplete = false;
     }
    }
-
    
 
         //c입력시 프로그램 통신상태 확인
@@ -155,6 +157,8 @@ void loop() {
     if( cycle >50) {
 
     if( m % 10 == 0 ) {
+      
+      
     Serial.print(",");
     Serial.print(cycle);
     Serial.print(",min");  
