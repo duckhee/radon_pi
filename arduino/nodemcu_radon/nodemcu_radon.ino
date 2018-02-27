@@ -51,7 +51,7 @@ void loop() { // run over and over
     Serial.println(get_value());
 
       HTTPClient http;
-      http.begin("http://insert?radon_data"+get_value()); //send sensor value 
+      http.begin("http://insert?radon_data="+get_value()); //send sensor value 
       int httpCode = http.GET();
   
           // httpCode will be negative on error
