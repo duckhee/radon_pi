@@ -29,9 +29,9 @@ void loop()
     Serial.println(get_value());
     if(check_open() == true)
     {
-        Serial.println("door open");
-    }else{
         Serial.println("door close");
+    }else{
+        Serial.println("door open");
     }
     delay(1000);
 }
