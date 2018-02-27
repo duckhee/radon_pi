@@ -27,6 +27,7 @@ int check_open(void); //check door on/off
 
 String get_key = "";
 
+bool flag;
 
 void setup() {
   // Open serial communications and wait for port to open:
@@ -185,8 +186,10 @@ String get_command()
                   String payload = http.getString();
                   Serial.println(payload);
                   return payload;
+              }else{
+                return q;
               }
-              return q;
+              
           } else {
               Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
               return q;
@@ -212,6 +215,8 @@ void send_value(String data_value, String door_value)
               if(httpCode == HTTP_CODE_OK) {
                   String payload = http.getString();
                   Serial.println(payload);
+              }else{
+                
               }
           } else {
               Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
