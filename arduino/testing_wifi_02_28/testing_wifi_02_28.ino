@@ -10,7 +10,7 @@
 
 #define RX      D5
 #define TX      D6
-#define CheckPin    D1
+#define CheckPin1    D1
 
 
 SoftwareSerial mySerial(RX, TX); // RX, TX
@@ -19,22 +19,23 @@ SoftwareSerial mySerial(RX, TX); // RX, TX
 void send_command(char); //send sensor command
 void get_valueprint(void); //get serial printf value
 String get_value(void); //get string value
-String get_command(void); //connect web server and get command
-void send_value(String, String); //send web server
+void get_command(String url); //connect web server and get command
+void send_value(String url, String radon_value, String door_value); //send web server
 
 
 int check_open(void); //check door on/off
 
 String get_key = "";
 
-bool fla = false;
+bool get_command_flag;
+bool send_value_flag;
 
 void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
   // set the data rate for the SoftwareSerial port
   mySerial.begin(9600);
-  pinMode(CheckPin, INPUT);
+  pinMode(CheckPin1, INPUT);
   WiFiManager wifiManager;
   wifiManager.setBreakAfterConfig(true);
   wifiManager.resetSettings();
@@ -56,43 +57,32 @@ void setup() {
 
 void loop() { // run over and over
 
-    char key = 'p';
+    String url = ""; //server url 
 
-    char command_key = (char)get_key;
+    get_command_flag = false;
+    send_value_flag = false;
 
-    send_command(key);
-    Serial.println(get_value());
-
-    if(check_open == true)
-    {
-      Serial.println("door close");
+    char key = (char)get_command(url);
+    
+    if(get_command){
+        send_command(key);
+        String radon_data = get_value();
+        int door_data = check_open();
+        do{
+            send_value(url, radon_data, door_data);
+            Serial.println("send server");
+        }while(send_value_flag == false);
+        Serial.println("send value success");
     }else{
-      Serial.println("door open");
+        Serial.println("get command failed");
     }
-
-      HTTPClient http;
-      http.begin("http://insert?radon_data="+get_value()); //send sensor value 
-      int httpCode = http.GET();
-  
-          // httpCode will be negative on error
-          if(httpCode > 0) {
-              // HTTP header has been send and Server response header has been handled
-              Serial.printf("[HTTP] GET... code: %d\n", httpCode);
-              Serial.println("success");
-
-              // file found at server
-              if(httpCode == HTTP_CODE_OK) {
-                  String payload = http.getString();
-                  Serial.println(payload);
-              }
-          } else {
-              Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
-          }
-          http.end();
-  
-    delay(1000);
+    
 
 }
+
+
+
+
 
 void send_command(char command)
 {
@@ -164,15 +154,15 @@ int check_open()
 {
   int open_status = 0;
 
-  open_status = digitalRead(CheckPin);
+  open_status = digitalRead(CheckPin1);
 
   return open_status;
 }
 
-String get_command()
+void get_command(String url)
 {
      HTTPClient http;
-      http.begin("http://get_command"); //send sensor value 
+      http.begin("http://" + url); //send sensor value 
       int httpCode = http.GET();
   
           // httpCode will be negative on error
@@ -185,24 +175,25 @@ String get_command()
               if(httpCode == HTTP_CODE_OK) {
                   String payload = http.getString();
                   Serial.println(payload);
-                  return payload;
+                  get_command_flag = true; // command flag on
+                  
               }else{
-                return q;
+                
               }
               
           } else {
               Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
-              return q;
+             
           }
           http.end();
   
     delay(1000);
 }
 
-void send_value(String data_value, String door_value)
+void send_value(String url, String data_value, String door_value)
 {
       HTTPClient http;
-      http.begin("http://insert?radon_data="+data_value +"&door_data="+door_value); //send sensor value 
+      http.begin("http://"url+"?radon_value="+data_value +"&door_data="+door_value); //send sensor value 
       int httpCode = http.GET();
   
           // httpCode will be negative on error
@@ -215,6 +206,7 @@ void send_value(String data_value, String door_value)
               if(httpCode == HTTP_CODE_OK) {
                   String payload = http.getString();
                   Serial.println(payload);
+                  send_value_flag = true;//send value flag on
               }else{
                 
               }
