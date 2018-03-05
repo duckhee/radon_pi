@@ -5,13 +5,15 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
+var index = require('./server/routes/index');
+var users = require('./server/routes/users');
+
+var db = require('./server/models');
 
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, './server/views'));
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
@@ -29,7 +31,7 @@ app.use('/users', users);
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
-  next(err);
+  res.json(err);
 });
 
 // error handler
@@ -42,5 +44,16 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+//db connection check
+db.sequelize.sync().then(() => {
+  console.log("db connection success");
+}).catch((err) => {
+  console.log('db connection error');
+  console.log(err);
+  console.log(err.stack);
+});
+
+
 
 module.exports = app;
