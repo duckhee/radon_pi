@@ -57,8 +57,9 @@ void setup() {
 
 void loop() { // run over and over
 
-    String url = ""; //server url 
-
+    String url = ""; //server   url 
+    Serial.print("debug url ::::::");
+    Serial.println(url);
     get_command_flag = false;
     send_value_flag = false;
 
@@ -68,6 +69,10 @@ void loop() { // run over and over
         send_command(key);
         String radon_data = get_value();
         int door_data = check_open();
+        Serial.print("debug radon_value :::::::");
+        Serial.print(radon_data);
+        Serial.print(",  door value :::::::");
+        Serial.println(door_data);
         do{
             send_value(url, radon_data, door_data);
             Serial.println("send server");
@@ -76,7 +81,8 @@ void loop() { // run over and over
     }else{
         Serial.println("get command failed");
     }
-    
+
+    delay(1000);
 
 }
 
