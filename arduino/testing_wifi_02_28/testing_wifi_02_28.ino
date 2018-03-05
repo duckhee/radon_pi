@@ -7,6 +7,8 @@
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager
 #include <SoftwareSerial.h>
+#include <ESP8266HTTPClient.h>
+
 
 #define RX      D5
 #define TX      D6
@@ -19,11 +21,11 @@ SoftwareSerial mySerial(RX, TX); // RX, TX
 void send_command(char); //send sensor command
 void get_valueprint(void); //get serial printf value
 String get_value(void); //get string value
-void get_command(String url); //connect web server and get command
+String get_command(String url); //connect web server and get command
 void send_value(String url, String radon_value, String door_value); //send web server
 
 
-int check_open(void); //check door on/off
+int check_open();//String); //check door on/off
 
 String get_key = "";
 
@@ -63,16 +65,24 @@ void loop() { // run over and over
     get_command_flag = false;
     send_value_flag = false;
 
-    char key = (char)get_command(url);
+    char key = get_command(url).charAt(0);
+    Serial.print("get command ::: ");
+    Serial.println(key);
+    Serial.println(get_command(url));
+    //char key = 's';
     
-    if(get_command){
+    if(get_command_flag){
         send_command(key);
         String radon_data = get_value();
+<<<<<<< HEAD
         int door_data = check_open();
         Serial.print("debug radon_value :::::::");
         Serial.print(radon_data);
         Serial.print(",  door value :::::::");
         Serial.println(door_data);
+=======
+        String door_data = (String)check_open();
+>>>>>>> 2778b6f1551dd8efd1157e5290490cffd4fe3fdb
         do{
             send_value(url, radon_data, door_data);
             Serial.println("send server");
@@ -156,16 +166,16 @@ String get_value(void)
   
 }
 
-int check_open()
+int check_open()//String checking)
 {
   int open_status = 0;
-
+  //open_status = digitalRead(checking);
   open_status = digitalRead(CheckPin1);
 
   return open_status;
 }
 
-void get_command(String url)
+String get_command(String url)
 {
      HTTPClient http;
       http.begin("http://" + url); //send sensor value 
@@ -182,13 +192,16 @@ void get_command(String url)
                   String payload = http.getString();
                   Serial.println(payload);
                   get_command_flag = true; // command flag on
-                  
+                  return payload;
               }else{
-                
+                get_command_flag = false; // command flag on
+                return "c";
               }
               
           } else {
               Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+              get_command_flag = false; // command flag on
+              return "c";
              
           }
           http.end();
@@ -199,7 +212,7 @@ void get_command(String url)
 void send_value(String url, String data_value, String door_value)
 {
       HTTPClient http;
-      http.begin("http://"url+"?radon_value="+data_value +"&door_data="+door_value); //send sensor value 
+      http.begin("http://"+url+"?radon_value="+data_value +"&door_data="+door_value); //send sensor value 
       int httpCode = http.GET();
   
           // httpCode will be negative on error
@@ -214,12 +227,14 @@ void send_value(String url, String data_value, String door_value)
                   Serial.println(payload);
                   send_value_flag = true;//send value flag on
               }else{
-                
+                  send_value_flag = false;//send value flag on
               }
           } else {
               Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+              send_value_flag = false;//send value flag on
           }
           http.end();
   
     delay(1000);
 }
+
