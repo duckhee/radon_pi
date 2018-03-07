@@ -22,6 +22,7 @@ void get_valueprint(void); //get serial printf value
 String get_value(void); //get string value
 String get_command(String url); //connect web server and get command
 void send_value(String url, String radon_value, String door_value); //send web server
+void delay_hour(unsigned int); //delay hour
 
 
 int check_open();//String); //check door on/off
@@ -178,7 +179,7 @@ int check_open()//String checking)
 String get_command(String url)
 {
      HTTPClient http;
-      http.begin("http://" + url); //send sensor value 
+      http.begin("http://" + url+"/get_command"); //send sensor value 
       int httpCode = http.GET();
   
           // httpCode will be negative on error
@@ -236,4 +237,20 @@ void send_value(String url, String data_value, String door_value)
           http.end();
   
     delay(1000);
+}
+
+void delay_hour(unsigned int num)
+{
+    unsigned int delay_time = num * 60*60*60;
+    
+    for(int i = 0; i < delay_time; i++)
+    {
+        delay(1000);
+      //  Serial.println(i);
+    }
+   
+   // Serial.print(count);
+  //  Serial.print("delay ");
+   // Serial.print(count);
+   // Serial.println("min");
 }

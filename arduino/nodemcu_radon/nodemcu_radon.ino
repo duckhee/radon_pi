@@ -9,13 +9,12 @@
 #include <SoftwareSerial.h>
 #include <ESP8266HTTPClient.h>
 
-
-#define RX      D5
-#define TX      D6
+#define RX      15
+#define TX      12
 #define CheckPin1    D1
 
 
-SoftwareSerial mySerial(RX, TX); // RX, TX
+SoftwareSerial swSer(RX, TX, false, 256); // RX, TX
 
 
 void send_command(char); //send sensor command
@@ -23,11 +22,13 @@ void get_valueprint(void); //get serial printf value
 String get_value(void); //get string value
 String get_command(String url); //connect web server and get command
 void send_value(String url, String radon_value, String door_value); //send web server
+void delay_hour(unsigned int); //delay hour
 
 
 int check_open();//String); //check door on/off
 
 String get_key = "";
+char get_commandkey;
 
 bool get_command_flag;
 bool send_value_flag;
@@ -36,7 +37,7 @@ void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
   // set the data rate for the SoftwareSerial port
-  mySerial.begin(9600);
+  swSer.begin(9600);
   pinMode(CheckPin1, INPUT);
   WiFiManager wifiManager;
   wifiManager.setBreakAfterConfig(true);
@@ -59,8 +60,9 @@ void setup() {
 
 void loop() { // run over and over
 
-    String url = ""; //server url 
-
+    String url = ""; //server   url 
+    Serial.print("debug url ::::::");
+    Serial.println(url);
     get_command_flag = false;
     send_value_flag = false;
 
@@ -73,16 +75,25 @@ void loop() { // run over and over
     if(get_command_flag){
         send_command(key);
         String radon_data = get_value();
+
+
         String door_data = (String)check_open();
+
+        Serial.print("debug radon_value :::::::");
+        Serial.print(radon_data);
+        Serial.print(",  door value :::::::");
+        Serial.println(door_data);
+
         do{
-            send_value(url, radon_data, door_data);
+            send_value(url, (String)radon_data, (String)door_data);
             Serial.println("send server");
         }while(send_value_flag == false);
         Serial.println("send value success");
     }else{
         Serial.println("get command failed");
     }
-    
+
+    delay(1000);
 
 }
 
@@ -95,19 +106,19 @@ void send_command(char command)
   switch(command)
   {
     case 's':
-      mySerial.print("s");
+      swSer.print("s");
       break;
     case 'c':
-      mySerial.print("c");
+      swSer.print("c");
       break;
     case 'p':
-      mySerial.print("p");
+      swSer.print("p");
     break;
     case 'r':
-      mySerial.print("r");
+      swSer.print("r");
     break;
     default:
-      mySerial.print("c");
+      swSer.print("c");
     break;
   }
 }
@@ -117,9 +128,9 @@ void get_valueprint(void)
 
   String buffer = "";
   
-  while(mySerial.available())
+  while(swSer.available())
   {
-    char c = mySerial.read();
+    char c = swSer.read();
     buffer += c;
     delay(100);    
 
@@ -130,7 +141,7 @@ void get_valueprint(void)
   }
   Serial.println(buffer);
   buffer = "";
-  mySerial.flush();
+  swSer.flush();
   
 }
 
@@ -139,9 +150,9 @@ String get_value(void)
 
   String buffer = "";
   
-  while(mySerial.available())
+  while(swSer.available())
   {
-    char c = mySerial.read();
+    char c = swSer.read();
     buffer += c;
     delay(100);    
 
@@ -150,7 +161,7 @@ String get_value(void)
       break;
     }
   }
-  mySerial.flush();
+  swSer.flush();
   
   return buffer;
   
@@ -168,7 +179,7 @@ int check_open()//String checking)
 String get_command(String url)
 {
      HTTPClient http;
-      http.begin("http://" + url); //send sensor value 
+      http.begin("http://" + url+"/get_command"); //send sensor value 
       int httpCode = http.GET();
   
           // httpCode will be negative on error
@@ -226,4 +237,17 @@ void send_value(String url, String data_value, String door_value)
           http.end();
   
     delay(1000);
+}
+
+void delay_hour(unsigned int num)
+{
+    unsigned int delay_time = num * 60*60*60;
+    
+    for(int i = 0; i < delay_time; i++)
+    {
+        delay(1000);
+
+    }
+   
+
 }
