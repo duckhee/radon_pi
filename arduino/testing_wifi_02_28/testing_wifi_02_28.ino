@@ -7,13 +7,14 @@
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager
 #include <SoftwareSerial.h>
+#include <ESP8266HTTPClient.h>
 
-#define RX      D5
-#define TX      D6
+#define RX      15
+#define TX      12
 #define CheckPin1    D1
 
 
-SoftwareSerial mySerial(RX, TX); // RX, TX
+SoftwareSerial swSer(RX, TX, false, 256); // RX, TX
 
 
 void send_command(char); //send sensor command
@@ -26,6 +27,7 @@ void send_value(String url, String radon_value, String door_value); //send web s
 int check_open(void); //check door on/off
 
 String get_key = "";
+char get_commandkey;
 
 bool get_command_flag;
 bool send_value_flag;
@@ -34,7 +36,7 @@ void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
   // set the data rate for the SoftwareSerial port
-  mySerial.begin(9600);
+  swSer.begin(9600);
   pinMode(CheckPin1, INPUT);
   WiFiManager wifiManager;
   wifiManager.setBreakAfterConfig(true);
@@ -62,14 +64,18 @@ void loop() { // run over and over
     get_command_flag = false;
     send_value_flag = false;
 
-    char key = (char)get_command(url);
-    
+    //char key = (char)get_command(url);
+    get_command(url);
+    char key = 's';
+    char test_key = get_commandkey;
+    Serial.print("testing key :::::: ");
+    Serial.println(get_commandkey);
     if(get_command){
         send_command(key);
         String radon_data = get_value();
         int door_data = check_open();
         do{
-            send_value(url, radon_data, door_data);
+            send_value(url, (String)radon_data, (String)door_data);
             Serial.println("send server");
         }while(send_value_flag == false);
         Serial.println("send value success");
@@ -89,19 +95,19 @@ void send_command(char command)
   switch(command)
   {
     case 's':
-      mySerial.print("s");
+      swSer.print("s");
       break;
     case 'c':
-      mySerial.print("c");
+      swSer.print("c");
       break;
     case 'p':
-      mySerial.print("p");
+      swSer.print("p");
     break;
     case 'r':
-      mySerial.print("r");
+      swSer.print("r");
     break;
     default:
-      mySerial.print("c");
+      swSer.print("c");
     break;
   }
 }
@@ -111,9 +117,9 @@ void get_valueprint(void)
 
   String buffer = "";
   
-  while(mySerial.available())
+  while(swSer.available())
   {
-    char c = mySerial.read();
+    char c = swSer.read();
     buffer += c;
     delay(100);    
 
@@ -124,7 +130,7 @@ void get_valueprint(void)
   }
   Serial.println(buffer);
   buffer = "";
-  mySerial.flush();
+  swSer.flush();
   
 }
 
@@ -133,9 +139,9 @@ String get_value(void)
 
   String buffer = "";
   
-  while(mySerial.available())
+  while(swSer.available())
   {
-    char c = mySerial.read();
+    char c = swSer.read();
     buffer += c;
     delay(100);    
 
@@ -144,7 +150,7 @@ String get_value(void)
       break;
     }
   }
-  mySerial.flush();
+  swSer.flush();
   
   return buffer;
   
@@ -176,7 +182,7 @@ void get_command(String url)
                   String payload = http.getString();
                   Serial.println(payload);
                   get_command_flag = true; // command flag on
-                  
+
               }else{
                 
               }
@@ -193,7 +199,7 @@ void get_command(String url)
 void send_value(String url, String data_value, String door_value)
 {
       HTTPClient http;
-      http.begin("http://"url+"?radon_value="+data_value +"&door_data="+door_value); //send sensor value 
+      http.begin("http://"+url+"?radon_value="+data_value +"&door_data="+door_value); //send sensor value 
       int httpCode = http.GET();
   
           // httpCode will be negative on error
