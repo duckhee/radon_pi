@@ -12,7 +12,10 @@
 #define RX      15
 #define TX      12
 #define CheckPin1    D1
-
+#define CheckPin2    D2
+#define CheckPin3    D3
+#define CheckPin4    D4
+#define CheckPin5    D5
 
 SoftwareSerial swSer(RX, TX, false, 256); // RX, TX
 
@@ -25,13 +28,20 @@ void send_value(String url, String radon_value, String door_value); //send web s
 void delay_hour(unsigned int); //delay hour
 
 
-int check_open();//String); //check door on/off
+int check_open1();//String); //check door on/off
+int check_open2();//String); //check door on/off
+int check_open3();//String); //check door on/off
+int check_open4();//String); //check door on/off
+int check_open5();//String); //check door on/off
 
 String get_key = "";
 char get_commandkey;
 
-bool get_command_flag;
-bool send_value_flag;
+bool get_command_flag = false;
+bool send_value_flag = false;
+
+bool loop_flag1 = false;
+bool loop_flag2 = false;
 
 void setup() {
   // Open serial communications and wait for port to open:
@@ -65,7 +75,13 @@ void loop() { // run over and over
     Serial.println(url);
     get_command_flag = false;
     send_value_flag = false;
-
+    
+    //first time get radon value
+    if(!loop_flag1){
+      delay_hour(1);
+      loop_flag1 = true;
+    }
+    
     char key = get_command(url).charAt(0);
     Serial.print("get command ::: ");
     Serial.println(key);
@@ -77,7 +93,7 @@ void loop() { // run over and over
         String radon_data = get_value();
 
 
-        String door_data = (String)check_open();
+        String door_data = (String)check_open1();
 
         Serial.print("debug radon_value :::::::");
         Serial.print(radon_data);
@@ -167,11 +183,44 @@ String get_value(void)
   
 }
 
-int check_open()//String checking)
+int check_open1()//String checking)
 {
   int open_status = 0;
   //open_status = digitalRead(checking);
   open_status = digitalRead(CheckPin1);
+
+  return open_status;
+}
+
+int check_open2()
+{
+  int open_status = 0;
+  open_status = digitalRead(CheckPin2);
+
+  return open_status;
+}
+
+int check_open3()
+{
+  int open_status = 0;
+  open_status = digitalRead(CheckPin3);
+
+  return open_status;
+}
+
+int check_open4()
+{
+  int open_status = 0;
+  open_status = digitalRead(CheckPin4);
+
+  return open_status;
+}
+
+
+int check_open5()
+{
+  int open_status = 0;
+  open_status = digitalRead(CheckPin5);
 
   return open_status;
 }
