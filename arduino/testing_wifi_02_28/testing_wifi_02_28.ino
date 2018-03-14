@@ -11,11 +11,19 @@
 
 #define RX      15
 #define TX      12
+<<<<<<< HEAD
 #define CheckPin1    D0
 #define CheckPin2    D1
 #define CheckPin3    D2
 #define CheckPin4    D3
 #define CheckPin5    D4
+=======
+#define CheckPin1    D1
+#define CheckPin2    D2
+#define CheckPin3    D3
+#define CheckPin4    D4
+#define CheckPin5    D5
+>>>>>>> ef734a4f366ccd8d0a39376128e89d73afd5e71a
 
 SoftwareSerial swSer(RX, TX, false, 256); // RX, TX
 
@@ -27,18 +35,30 @@ String get_command(String url); //connect web server and get command
 void send_value(String url, String radon_value, String door_value); //send web server
 void delay_hour(unsigned int); //delay hour
 
+<<<<<<< HEAD
 int checking_open1(void);//checking door1 on/off
 int checking_open2(void);//checking door2 on/off
 int checking_open3(void);//checking door3 on/off
 int checking_open4(void);//checking door4 on/off
 int checking_open5(void);//checking door5 on/off
 int check_open();//String); //check door on/off
+=======
+
+int check_open1();//String); //check door on/off
+int check_open2();//String); //check door on/off
+int check_open3();//String); //check door on/off
+int check_open4();//String); //check door on/off
+int check_open5();//String); //check door on/off
+>>>>>>> ef734a4f366ccd8d0a39376128e89d73afd5e71a
 
 String get_key = "";
 char get_commandkey;
 
-bool get_command_flag;
-bool send_value_flag;
+bool get_command_flag = false;
+bool send_value_flag = false;
+
+bool loop_flag1 = false;
+bool loop_flag2 = false;
 
 void setup() {
   // Open serial communications and wait for port to open:
@@ -72,7 +92,13 @@ void loop() { // run over and over
     Serial.println(url);
     get_command_flag = false;
     send_value_flag = false;
-
+    
+    //first time get radon value
+    if(!loop_flag1){
+      delay_hour(1);
+      loop_flag1 = true;
+    }
+    
     char key = get_command(url).charAt(0);
     Serial.print("get command ::: ");
     Serial.println(key);
@@ -84,7 +110,7 @@ void loop() { // run over and over
         String radon_data = get_value();
 
 
-        String door_data = (String)check_open();
+        String door_data = (String)check_open1();
 
         String door_value1 = (String)checking_open1();
         String door_value2 = (String)checking_open2();
@@ -191,7 +217,7 @@ String get_value(void)
   
 }
 
-int check_open()//String checking)
+int check_open1()//String checking)
 {
   int open_status = 0;
   //open_status = digitalRead(checking);
@@ -200,6 +226,7 @@ int check_open()//String checking)
   return open_status;
 }
 
+<<<<<<< HEAD
 int checking_open1()
 {
   int open_status = 0;
@@ -213,33 +240,57 @@ int checking_open2()
 {
   int open_status = 0;
   //open_status = digitalRead(checking);
+=======
+int check_open2()
+{
+  int open_status = 0;
+>>>>>>> ef734a4f366ccd8d0a39376128e89d73afd5e71a
   open_status = digitalRead(CheckPin2);
 
   return open_status;
 }
 
+<<<<<<< HEAD
 int checking_open3()
 {
   int open_status = 0;
   //open_status = digitalRead(checking);
+=======
+int check_open3()
+{
+  int open_status = 0;
+>>>>>>> ef734a4f366ccd8d0a39376128e89d73afd5e71a
   open_status = digitalRead(CheckPin3);
 
   return open_status;
 }
 
+<<<<<<< HEAD
 int checking_open4()
 {
   int open_status = 0;
   //open_status = digitalRead(checking);
+=======
+int check_open4()
+{
+  int open_status = 0;
+>>>>>>> ef734a4f366ccd8d0a39376128e89d73afd5e71a
   open_status = digitalRead(CheckPin4);
 
   return open_status;
 }
 
+<<<<<<< HEAD
 int checking_open5()
 {
   int open_status = 0;
   //open_status = digitalRead(checking);
+=======
+
+int check_open5()
+{
+  int open_status = 0;
+>>>>>>> ef734a4f366ccd8d0a39376128e89d73afd5e71a
   open_status = digitalRead(CheckPin5);
 
   return open_status;
