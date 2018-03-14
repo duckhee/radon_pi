@@ -86,10 +86,27 @@ void loop() { // run over and over
 
         String door_data = (String)check_open();
 
+        String door_value1 = (String)checking_open1();
+        String door_value2 = (String)checking_open2();
+        String door_value3 = (String)checking_open3();
+        String door_value4 = (String)checking_open4();
+        String door_value5 = (String)checking_open5();
+
         Serial.print("debug radon_value :::::::");
         Serial.print(radon_data);
         Serial.print(",  door value :::::::");
         Serial.println(door_data);
+        
+        Serial.print(",  door value1 :::::::");
+        Serial.println(door_value1);
+        Serial.print(",  door value2 :::::::");
+        Serial.println(door_value2);
+        Serial.print(",  door value3 :::::::");
+        Serial.println(door_value3);
+        Serial.print(",  door value4 :::::::");
+        Serial.println(door_value4);
+        Serial.print(",  door value5 :::::::");
+        Serial.println(door_value5);
 
         do{
             send_value(url, (String)radon_data, (String)door_data);
