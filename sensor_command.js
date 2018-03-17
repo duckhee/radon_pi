@@ -19,7 +19,7 @@ module.exports = function(serialport) {
 
     command.prototype.list() {
         port.write('p', function(data) {
-            console.log('p data : ', data);
+            console.log('p data : ', d
             command.p_data = data;
         });
         return command;

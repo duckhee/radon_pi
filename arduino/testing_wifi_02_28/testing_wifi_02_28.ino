@@ -11,11 +11,19 @@
 
 #define RX      15
 #define TX      12
+<<<<<<< HEAD
+#define CheckPin1    D0
+#define CheckPin2    D1
+#define CheckPin3    D2
+#define CheckPin4    D3
+#define CheckPin5    D4
+=======
 #define CheckPin1    D1
 #define CheckPin2    D2
 #define CheckPin3    D3
 #define CheckPin4    D4
 #define CheckPin5    D5
+>>>>>>> ef734a4f366ccd8d0a39376128e89d73afd5e71a
 
 SoftwareSerial swSer(RX, TX, false, 256); // RX, TX
 
@@ -27,12 +35,21 @@ String get_command(String url); //connect web server and get command
 void send_value(String url, String radon_value, String door_value); //send web server
 void delay_hour(unsigned int); //delay hour
 
+<<<<<<< HEAD
+int checking_open1(void);//checking door1 on/off
+int checking_open2(void);//checking door2 on/off
+int checking_open3(void);//checking door3 on/off
+int checking_open4(void);//checking door4 on/off
+int checking_open5(void);//checking door5 on/off
+int check_open();//String); //check door on/off
+=======
 
 int check_open1();//String); //check door on/off
 int check_open2();//String); //check door on/off
 int check_open3();//String); //check door on/off
 int check_open4();//String); //check door on/off
 int check_open5();//String); //check door on/off
+>>>>>>> ef734a4f366ccd8d0a39376128e89d73afd5e71a
 
 String get_key = "";
 char get_commandkey;
@@ -95,10 +112,27 @@ void loop() { // run over and over
 
         String door_data = (String)check_open1();
 
+        String door_value1 = (String)checking_open1();
+        String door_value2 = (String)checking_open2();
+        String door_value3 = (String)checking_open3();
+        String door_value4 = (String)checking_open4();
+        String door_value5 = (String)checking_open5();
+
         Serial.print("debug radon_value :::::::");
         Serial.print(radon_data);
         Serial.print(",  door value :::::::");
         Serial.println(door_data);
+        
+        Serial.print(",  door value1 :::::::");
+        Serial.println(door_value1);
+        Serial.print(",  door value2 :::::::");
+        Serial.println(door_value2);
+        Serial.print(",  door value3 :::::::");
+        Serial.println(door_value3);
+        Serial.print(",  door value4 :::::::");
+        Serial.println(door_value4);
+        Serial.print(",  door value5 :::::::");
+        Serial.println(door_value5);
 
         do{
             send_value(url, (String)radon_data, (String)door_data);
@@ -148,7 +182,7 @@ void get_valueprint(void)
   {
     char c = swSer.read();
     buffer += c;
-    delay(100);    
+    delay(1000);    
 
     if(c == '\r\n')
     {
@@ -170,7 +204,7 @@ String get_value(void)
   {
     char c = swSer.read();
     buffer += c;
-    delay(100);    
+    delay(1000);    
 
     if(c == '\r\n')
     {
@@ -192,34 +226,71 @@ int check_open1()//String checking)
   return open_status;
 }
 
+<<<<<<< HEAD
+int checking_open1()
+{
+  int open_status = 0;
+  //open_status = digitalRead(checking);
+  open_status = digitalRead(CheckPin1);
+
+  return open_status;
+}
+
+int checking_open2()
+{
+  int open_status = 0;
+  //open_status = digitalRead(checking);
+=======
 int check_open2()
 {
   int open_status = 0;
+>>>>>>> ef734a4f366ccd8d0a39376128e89d73afd5e71a
   open_status = digitalRead(CheckPin2);
 
   return open_status;
 }
 
+<<<<<<< HEAD
+int checking_open3()
+{
+  int open_status = 0;
+  //open_status = digitalRead(checking);
+=======
 int check_open3()
 {
   int open_status = 0;
+>>>>>>> ef734a4f366ccd8d0a39376128e89d73afd5e71a
   open_status = digitalRead(CheckPin3);
 
   return open_status;
 }
 
+<<<<<<< HEAD
+int checking_open4()
+{
+  int open_status = 0;
+  //open_status = digitalRead(checking);
+=======
 int check_open4()
 {
   int open_status = 0;
+>>>>>>> ef734a4f366ccd8d0a39376128e89d73afd5e71a
   open_status = digitalRead(CheckPin4);
 
   return open_status;
 }
 
+<<<<<<< HEAD
+int checking_open5()
+{
+  int open_status = 0;
+  //open_status = digitalRead(checking);
+=======
 
 int check_open5()
 {
   int open_status = 0;
+>>>>>>> ef734a4f366ccd8d0a39376128e89d73afd5e71a
   open_status = digitalRead(CheckPin5);
 
   return open_status;
@@ -262,7 +333,37 @@ String get_command(String url)
 void send_value(String url, String data_value, String door_value)
 {
       HTTPClient http;
-      http.begin("http://"+url+"?radon_value="+data_value +"&door_data="+door_value); //send sensor value 
+      http.begin("http://"+url+"?radon_value="+data_value +"&door_data1="+door_value); //send sensor value 
+      int httpCode = http.GET();
+  
+          // httpCode will be negative on error
+          if(httpCode > 0) {
+              // HTTP header has been send and Server response header has been handled
+              Serial.printf("[HTTP] GET... code: %d\n", httpCode);
+              Serial.println("success");
+
+              // file found at server
+              if(httpCode == HTTP_CODE_OK) {
+                  String payload = http.getString();
+                  Serial.println(payload);
+                  send_value_flag = true;//send value flag on
+              }else{
+                  send_value_flag = false;//send value flag on
+              }
+          } else {
+              Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+              send_value_flag = false;//send value flag on
+          }
+          http.end();
+  
+    delay(1000);
+}
+
+
+void send_value_all(String url, String data_value, String door_value1, String door_value2, String door_value3, String door_value4, String door_value5)
+{
+      HTTPClient http;
+      http.begin("http://"+url+"?radon_value="+data_value +"&door_data1="+door_value1+"&door_data2="+door_value2+"&door_data3="+door_value3+"&door_data4="+door_value4+"&door_data5="+door_value5); //send sensor value 
       int httpCode = http.GET();
   
           // httpCode will be negative on error
@@ -290,7 +391,7 @@ void send_value(String url, String data_value, String door_value)
 
 void delay_hour(unsigned int num)
 {
-    unsigned int delay_time = num * 60*60*60;
+    unsigned int delay_time = num * 60*60;
     
     for(int i = 0; i < delay_time; i++)
     {
