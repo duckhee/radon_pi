@@ -70,7 +70,7 @@ void setup() {
 
 void loop() { // run over and over
 
-    String url = ""; //server   url 
+    String url = "192.168.0.34:3000"; //server   url 
     Serial.print("debug url ::::::");
     Serial.println(url);
     get_command_flag = false;
@@ -295,7 +295,7 @@ void delay_hour(unsigned int num)
     for(int i = 0; i < delay_time; i++)
     {
         delay(1000);
-      //  Serial.println(i);
+        Serial.println(i);
     }
    
    // Serial.print(count);
